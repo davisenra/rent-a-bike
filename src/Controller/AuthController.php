@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api', name: 'api_')]
 final class AuthController extends AbstractController
 {
     public function __construct(
@@ -27,7 +28,7 @@ final class AuthController extends AbstractController
         }
 
         $user = $this->userService->createNewUser((array) $registerUserRequest);
-        $wallet = $this->walletService->createUserWallet($user);
+        $this->walletService->createUserWallet($user);
 
         return new JsonResponse([
             'message' => 'User registered successfully',

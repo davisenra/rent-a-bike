@@ -36,4 +36,9 @@ class UserRepository
 
         return $userEntity;
     }
+
+    public function findOneById(int $userId): ?User
+    {
+        return $this->entityManager->find(User::class, $userId);
+    }
 }
