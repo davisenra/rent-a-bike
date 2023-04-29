@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Entity]
 #[ORM\Table(name: '`user`')]
 class User
 {
@@ -103,9 +103,23 @@ class User
         return $this->createdAt;
     }
 
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getWallet(): ?Wallet
@@ -115,8 +129,8 @@ class User
 
     public function setWallet(Wallet $wallet): self
     {
-        if ($wallet->getOwner() !== $this) {
-            $wallet->setOwner($this);
+        if ($wallet->getUser() !== $this) {
+            $wallet->setUser($this);
         }
 
         $this->wallet = $wallet;
@@ -136,7 +150,7 @@ class User
     {
         if (!$this->rentals->contains($rental)) {
             $this->rentals->add($rental);
-            $rental->setRenter($this);
+            $rental->setUser($this);
         }
 
         return $this;

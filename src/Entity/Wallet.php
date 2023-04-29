@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: WalletRepository::class)]
+#[ORM\Entity]
 class Wallet
 {
     #[ORM\Id]
@@ -48,14 +48,14 @@ class Wallet
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getUser(): ?User
     {
-        return $this->owner;
+        return $this->user;
     }
 
-    public function setOwner(User $owner): self
+    public function setUser(User $user): self
     {
-        $this->owner = $owner;
+        $this->user = $user;
 
         return $this;
     }
@@ -72,7 +72,7 @@ class Wallet
         return $this;
     }
 
-    public function isIsLocked(): ?bool
+    public function isLocked(): ?bool
     {
         return $this->isLocked;
     }

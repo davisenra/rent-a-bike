@@ -6,7 +6,7 @@ use App\Repository\BikeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: BikeRepository::class)]
+#[ORM\Entity]
 class Bike
 {
     #[ORM\Id]

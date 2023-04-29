@@ -6,7 +6,7 @@ use App\Repository\RentalRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RentalRepository::class)]
+#[ORM\Entity]
 class Rental
 {
     #[ORM\Id]
@@ -25,7 +25,7 @@ class Rental
     #[ORM\Column]
     private ?\DateTimeImmutable $startTime = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endTime = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
@@ -45,14 +45,14 @@ class Rental
         return $this->id;
     }
 
-    public function getRenter(): ?User
+    public function getUser(): ?User
     {
-        return $this->renter;
+        return $this->user;
     }
 
-    public function setRenter(?User $renter): self
+    public function setUser(?User $user): self
     {
-        $this->renter = $renter;
+        $this->user = $user;
 
         return $this;
     }
