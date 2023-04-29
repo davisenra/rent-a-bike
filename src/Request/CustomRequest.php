@@ -10,6 +10,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class CustomRequest implements CustomRequestInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $validationErrors = [];
 
     public function __construct(private ValidatorInterface $validator)
@@ -17,6 +20,9 @@ abstract class CustomRequest implements CustomRequestInterface
         $this->populate();
     }
 
+    /**
+     * @return string[]
+     */
     public function getValidationErrors(): array
     {
         return $this->validationErrors;

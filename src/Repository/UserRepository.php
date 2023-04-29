@@ -6,14 +6,34 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 
 class UserRepository
 {
-    private readonly EntityRepository $repository;
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager
+    ) {}
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /**
+     * @param array<string, string> $data
+     * @return User
+     */
+    public function save(array $data): User
     {
-        $this->repository = $entityManager->getRepository(User::class);
+        $password = password_hash($data['password'], PASSWORD_BCRYPT, [
+            'cost' => 12,
+        ]);
+
+        $userEntity = new User();
+        $userEntity->setEmail($data['email']);
+        $userEntity->setPassword($password);
+        $userEntity->setFirstName($data['firstName']);
+        $userEntity->setLastName($data['lastName']);
+        $userEntity->setCreatedAt(new \DateTimeImmutable());
+        $userEntity->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->entityManager->persist($userEntity);
+        $this->entityManager->flush();
+
+        return $userEntity;
     }
 }
