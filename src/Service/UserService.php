@@ -21,7 +21,19 @@ final class UserService
      */
     public function createNewUser(array $userData): User
     {
-        return $this->userRepository->save($userData);
+        $password = password_hash($userData['password'], PASSWORD_BCRYPT, [
+            'cost' => 12,
+        ]);
+
+        $user = new User();
+        $user->setEmail($userData['email']);
+        $user->setPassword($password);
+        $user->setFirstName($userData['firstName']);
+        $user->setLastName($userData['lastName']);
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setUpdatedAt(new \DateTimeImmutable());
+
+        return $this->userRepository->save($user);
     }
 
     public function checkIfUserExistsByEmail(string $email): bool

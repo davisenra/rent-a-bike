@@ -13,28 +13,12 @@ class UserRepository
         private readonly EntityManagerInterface $entityManager
     ) {}
 
-    /**
-     * @param array<string, string> $data
-     * @return User
-     */
-    public function save(array $data): User
+    public function save(User $user): User
     {
-        $password = password_hash($data['password'], PASSWORD_BCRYPT, [
-            'cost' => 12,
-        ]);
-
-        $userEntity = new User();
-        $userEntity->setEmail($data['email']);
-        $userEntity->setPassword($password);
-        $userEntity->setFirstName($data['firstName']);
-        $userEntity->setLastName($data['lastName']);
-        $userEntity->setCreatedAt(new \DateTimeImmutable());
-        $userEntity->setUpdatedAt(new \DateTimeImmutable());
-
-        $this->entityManager->persist($userEntity);
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        return $userEntity;
+        return $user;
     }
 
     public function findOneById(int $userId): ?User
