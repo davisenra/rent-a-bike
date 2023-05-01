@@ -24,8 +24,6 @@ final class UserController extends AbstractController
         $user = $this->getUser();
         $userProfile = $this->userService->getUserProfileById($user->getId());
 
-        return $this->json([
-            'data' => $userProfile,
-        ], Response::HTTP_OK);
+        return $this->json(['data' => $userProfile], Response::HTTP_OK);
     }
 }

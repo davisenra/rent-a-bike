@@ -24,7 +24,7 @@ final class AuthController extends AbstractController
     public function register(RegisterUserRequest $registerUserRequest): JsonResponse
     {
         if (!$registerUserRequest->validate()) {
-            return new JsonResponse($registerUserRequest->getValidationErrors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->json($registerUserRequest->getValidationErrors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ($this->userService->checkIfUserExistsByEmail($registerUserRequest->email)) {
@@ -34,8 +34,6 @@ final class AuthController extends AbstractController
         $user = $this->userService->createNewUser((array) $registerUserRequest);
         $this->walletService->createUserWallet($user);
 
-        return new JsonResponse([
-            'message' => 'User registered successfully',
-        ], Response::HTTP_CREATED);
+        return $this->json(['message' => 'User registered successfully'], Response::HTTP_CREATED);
     }
 }
