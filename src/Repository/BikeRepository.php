@@ -24,6 +24,18 @@ class BikeRepository
     /**
      * @return Bike[]
      */
+    public function findAll(): array
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->select('b')
+            ->from(Bike::class, 'b')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Bike[]
+     */
     public function allAvailableBikes(): array
     {
         return $this->entityManager->createQueryBuilder()

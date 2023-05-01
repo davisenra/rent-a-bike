@@ -46,7 +46,7 @@ class Bike
         return $this;
     }
 
-    public function isIsAvailable(): ?bool
+    public function isAvailable(): ?bool
     {
         return $this->isAvailable;
     }
