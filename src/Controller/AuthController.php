@@ -18,7 +18,8 @@ final class AuthController extends AbstractController
     public function __construct(
         private readonly UserService $userService,
         private readonly WalletService $walletService,
-    ) {}
+    ) {
+    }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function register(RegisterUserRequest $registerUserRequest): JsonResponse

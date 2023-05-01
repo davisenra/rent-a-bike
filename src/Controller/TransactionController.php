@@ -21,7 +21,8 @@ class TransactionController extends AbstractController
     public function __construct(
         private readonly TransactionService $transactionService,
         private readonly WalletService $walletService,
-    ) {}
+    ) {
+    }
 
     #[Route('/transactions/deposit', name: 'deposit', methods: ['POST'])]
     public function newDeposit(WalletDepositRequest $depositRequest): JsonResponse

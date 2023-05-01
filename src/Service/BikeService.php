@@ -11,7 +11,8 @@ class BikeService
 {
     public function __construct(
         private readonly BikeRepository $bikeRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @return array<string, mixed>

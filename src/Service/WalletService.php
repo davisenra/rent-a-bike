@@ -15,7 +15,8 @@ final class WalletService
 {
     public function __construct(
         private readonly WalletRepository $walletRepository,
-    ) {}
+    ) {
+    }
 
     public function createUserWallet(User $user): Wallet
     {

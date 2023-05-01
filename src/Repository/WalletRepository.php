@@ -12,7 +12,8 @@ class WalletRepository
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     public function save(Wallet $wallet): Wallet
     {

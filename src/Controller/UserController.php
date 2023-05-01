@@ -14,8 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', name: 'api_')]
 final class UserController extends AbstractController
 {
-    public function __construct(private readonly UserService $userService)
-    {}
+    public function __construct(
+        private readonly UserService $userService
+    ) {
+    }
 
     #[Route('/profile', name: 'profile', methods: ['GET'])]
     public function profile(): JsonResponse

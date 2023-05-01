@@ -11,7 +11,8 @@ class TransactionRepository
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     public function save(Transaction $transaction): Transaction
     {

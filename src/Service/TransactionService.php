@@ -14,7 +14,8 @@ class TransactionService
 {
     public function __construct(
         private readonly TransactionRepository $transactionRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $transactionData

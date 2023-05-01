@@ -11,7 +11,8 @@ class BikeRepository
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     public function save(Bike $bike): Bike
     {

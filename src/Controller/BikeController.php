@@ -15,7 +15,8 @@ class BikeController extends AbstractController
 {
     public function __construct(
         private readonly BikeService $bikeService
-    ) {}
+    ) {
+    }
 
     #[Route('/bikes', name: 'all_bikes')]
     public function all(): JsonResponse

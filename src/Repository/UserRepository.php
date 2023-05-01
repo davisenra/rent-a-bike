@@ -11,7 +11,8 @@ class UserRepository
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     public function save(User $user): User
     {

@@ -10,5 +10,6 @@ class RentalRepository
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 }
