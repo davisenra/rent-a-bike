@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\RentalRepository;
+use App\Enum\RentalStatus;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,7 +31,7 @@ class Rental
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $totalPrice = null;
 
-    #[ORM\Column(length: 64)]
+    #[ORM\Column(length: 64, nullable: false, enumType: RentalStatus::class)]
     private ?string $status = null;
 
     #[ORM\Column]
@@ -105,14 +105,14 @@ class Rental
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
-        return $this->status;
+        return RentalStatus::from($this->status)->value;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(RentalStatus $status): self
     {
-        $this->status = $status;
+        $this->status = $status->value;
 
         return $this;
     }

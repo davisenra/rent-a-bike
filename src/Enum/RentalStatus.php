@@ -2,10 +2,10 @@
 
 namespace App\Enum;
 
-enum RentalStatus
+enum RentalStatus: string
 {
-    case RESERVED;
-    case CANCELLED;
-    case ONGOING;
-    case COMPLETED;
+    case RESERVED = 'reserved';
+    case CANCELLED = 'cancelled';
+    case ONGOING = 'ongoing';
+    case COMPLETED = 'completed';
 }
