@@ -24,6 +24,11 @@ final class UserService
         return $this->userRepository->save($userData);
     }
 
+    public function checkIfUserExistsByEmail(string $email): bool
+    {
+        return $this->userRepository->findOneByEmail($email) !== null;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -44,8 +49,8 @@ final class UserService
             ],
 
             'rentals' => array_map(fn (Rental $rental) => [
-                'description' => $rental->getDescription(),
-                'price' => $rental->getPrice(),
+                'status' => $rental->getStatus(),
+                'totalPrice' => $rental->getTotalPrice(),
                 'startTime' => $rental->getStartTime()->format('Y-m-d H:i:s'),
                 'endTime' => $rental->getEndTime()->format('Y-m-d H:i:s'),
             ], $user->getRentals()->toArray()),

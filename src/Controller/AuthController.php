@@ -27,6 +27,10 @@ final class AuthController extends AbstractController
             return new JsonResponse($registerUserRequest->getValidationErrors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        if ($this->userService->checkIfUserExistsByEmail($registerUserRequest->email)) {
+            throw new \JsonException('Email already registered', Response::HTTP_CONFLICT);
+        }
+
         $user = $this->userService->createNewUser((array) $registerUserRequest);
         $this->walletService->createUserWallet($user);
 
