@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Entity\Transaction;
 use App\Entity\User;
+use App\Enum\TransactionStatus;
+use App\Enum\TransactionType;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
 use App\Service\WalletService;
@@ -13,15 +17,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class WalletServiceTest extends DatabaseDependantTestCase
 {
-    private array $userData = [
-        'email' => 'foo@bar.com',
-        'password' => 'foobar',
-        'firstName' => 'Foo',
-        'lastName' => 'Bar',
-    ];
-
     private UserRepository $userRepository;
     private WalletRepository $walletRepository;
+    private TransactionRepository $transactionRepository;
 
     public function setUp(): void
     {
@@ -29,14 +27,14 @@ class WalletServiceTest extends DatabaseDependantTestCase
 
         $this->userRepository = new UserRepository($entityManager);
         $this->walletRepository = new WalletRepository($entityManager);
+        $this->transactionRepository = new TransactionRepository($entityManager);
 
         parent::setUp();
     }
 
     public function testUserCanCreateWalletSuccessfully()
     {
-        $userEntity = $this->createUserEntity();
-        $user = $this->userRepository->save($userEntity);
+        $user = $this->createUserEntity();
 
         $walletService = new WalletService($this->walletRepository);
         $wallet = $walletService->createUserWallet($user);
@@ -47,8 +45,7 @@ class WalletServiceTest extends DatabaseDependantTestCase
 
     public function testUserCanHaveOnlyOneWallet()
     {
-        $userEntity = $this->createUserEntity();
-        $user = $this->userRepository->save($userEntity);
+        $user = $this->createUserEntity();
 
         $walletService = new WalletService($this->walletRepository);
         $wallet = $walletService->createUserWallet($user);
@@ -63,8 +60,7 @@ class WalletServiceTest extends DatabaseDependantTestCase
 
     public function testWalletHasDefaultBalanceOfZero()
     {
-        $userEntity = $this->createUserEntity();
-        $user = $this->userRepository->save($userEntity);
+        $user = $this->createUserEntity();
 
         $walletService = new WalletService($this->walletRepository);
         $wallet = $walletService->createUserWallet($user);
@@ -72,16 +68,97 @@ class WalletServiceTest extends DatabaseDependantTestCase
         $this->assertSame('0.00', $wallet->getBalance());
     }
 
+    public function testItAddsFundsToWalletCorrectly()
+    {
+        $user = $this->createUserEntity();
+
+        $walletService = new WalletService($this->walletRepository);
+        $wallet = $walletService->createUserWallet($user);
+
+        $this->assertEquals('0.00', $wallet->getBalance());
+
+        $transaction = new Transaction();
+        $transaction->setWallet($wallet);
+        $transaction->setAmount('10.00');
+        $transaction->setType(TransactionType::DEPOSIT);
+        $transaction->setStatus(TransactionStatus::SUCCESS);
+        $transaction->setCreatedAt(new \DateTimeImmutable());
+        $transaction->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->transactionRepository->save($transaction);
+
+        $walletService = new WalletService($this->walletRepository);
+        $walletService->addFundsToWallet($transaction, $wallet);
+
+        $this->assertEquals('10', $wallet->getBalance());
+    }
+
+    public function testItThrowsErrorIfTransactionIsNotSuccessfull()
+    {
+        $user = $this->createUserEntity();
+
+        $walletService = new WalletService($this->walletRepository);
+        $wallet = $walletService->createUserWallet($user);
+
+        $transaction = new Transaction();
+        $transaction->setWallet($wallet);
+        $transaction->setAmount('10.00');
+        $transaction->setType(TransactionType::DEPOSIT);
+        $transaction->setStatus(TransactionStatus::PENDING);
+        $transaction->setCreatedAt(new \DateTimeImmutable());
+        $transaction->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->transactionRepository->save($transaction);
+
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Transaction status must be successfull');
+
+        $walletService = new WalletService($this->walletRepository);
+        $walletService->addFundsToWallet($transaction, $wallet);
+
+        $this->assertEquals('0.00', $wallet->getBalance());
+    }
+
+    public function testItUnlocksTheAccountAfterBalanceIsNotNegative()
+    {
+        $user = $this->createUserEntity();
+
+        $walletService = new WalletService($this->walletRepository);
+        $wallet = $walletService->createUserWallet($user);
+
+        $this->walletRepository->updateWalletBalance($wallet, '-10.00');
+
+        $this->assertEquals('-10.00', $wallet->getBalance());
+
+        $this->walletRepository->lockWallet($wallet);
+
+        $this->assertTrue($wallet->isLocked());
+
+        $transaction = new Transaction();
+        $transaction->setWallet($wallet);
+        $transaction->setAmount('10.00');
+        $transaction->setType(TransactionType::DEPOSIT);
+        $transaction->setStatus(TransactionStatus::SUCCESS);
+        $transaction->setCreatedAt(new \DateTimeImmutable());
+        $transaction->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->transactionRepository->save($transaction);
+
+        $walletService->addFundsToWallet($transaction, $wallet);
+
+        $this->assertFalse($wallet->isLocked());
+    }
+
     private function createUserEntity(): User
     {
         $userEntity = new User();
-        $userEntity->setEmail($this->userData['email']);
-        $userEntity->setPassword($this->userData['password']);
-        $userEntity->setFirstName($this->userData['firstName']);
-        $userEntity->setLastName($this->userData['lastName']);
+        $userEntity->setEmail('foo@bar.com');
+        $userEntity->setPassword('123456');
+        $userEntity->setFirstName('Foo');
+        $userEntity->setLastName('Bar');
         $userEntity->setCreatedAt(new \DateTimeImmutable());
         $userEntity->setUpdatedAt(new \DateTimeImmutable());
 
-        return $userEntity;
+        return $this->userRepository->save($userEntity);
     }
 }
