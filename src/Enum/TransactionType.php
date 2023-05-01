@@ -2,8 +2,8 @@
 
 namespace App\Enum;
 
-enum TransactionType
+enum TransactionType: string
 {
-    case DEPOSIT;
-    case RENTAL;
+    case DEPOSIT = 'deposit';
+    case RENTAL = 'rental';
 }

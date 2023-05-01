@@ -14,15 +14,26 @@ class WalletRepository
         private readonly EntityManagerInterface $entityManager
     ) {}
 
-    public function save(User $user): Wallet
+    public function save(Wallet $wallet): Wallet
     {
-        $wallet = new Wallet();
-        $wallet->setUser($user);
-        $wallet->setBalance('0.00');
-        $wallet->setIsLocked(false);
-        $wallet->setCreatedAt(new \DateTimeImmutable());
-        $wallet->setUpdatedAt(new \DateTimeImmutable());
+        $this->entityManager->persist($wallet);
+        $this->entityManager->flush();
 
+        return $wallet;
+    }
+
+    public function updateWalletBalance(Wallet $wallet, string $newBalance): Wallet
+    {
+        $wallet->setBalance($newBalance);
+        $this->entityManager->persist($wallet);
+        $this->entityManager->flush();
+
+        return $wallet;
+    }
+
+    public function lockWallet(Wallet $wallet): Wallet
+    {
+        $wallet->setIsLocked(true);
         $this->entityManager->persist($wallet);
         $this->entityManager->flush();
 

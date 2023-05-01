@@ -2,7 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\TransactionRepository;
+use App\Enum\TransactionStatus;
+use App\Enum\TransactionType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,11 +22,11 @@ class Transaction
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $amount = null;
 
-    #[ORM\Column(length: 64)]
-    private ?string $type = null;
+    #[ORM\Column(length: 64, nullable: false, enumType: TransactionType::class)]
+    private TransactionType $type;
 
-    #[ORM\Column(length: 64)]
-    private ?string $status = null;
+    #[ORM\Column(length: 64, nullable: false, enumType: TransactionStatus::class)]
+    private TransactionStatus $status;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -62,24 +63,24 @@ class Transaction
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): TransactionType
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(TransactionType $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): TransactionStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(TransactionStatus $status): self
     {
         $this->status = $status;
 

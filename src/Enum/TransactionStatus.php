@@ -2,9 +2,9 @@
 
 namespace App\Enum;
 
-enum TransactionStatus
+enum TransactionStatus: string
 {
-    case PENDING;
-    case SUCCESS;
-    case FAILED;
+    case PENDING = 'pending';
+    case SUCCESS = 'success';
+    case FAILED = 'failed';
 }
