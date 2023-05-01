@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
 use App\Service\WalletService;
-use App\Tests\DatabaseDependantTestCase;
+use App\Tests\Database\DatabaseDependantTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 
 class WalletServiceTest extends DatabaseDependantTestCase
@@ -34,7 +35,8 @@ class WalletServiceTest extends DatabaseDependantTestCase
 
     public function testUserCanCreateWalletSuccessfully()
     {
-        $user = $this->userRepository->save($this->userData);
+        $userEntity = $this->createUserEntity();
+        $user = $this->userRepository->save($userEntity);
 
         $walletService = new WalletService($this->walletRepository);
         $wallet = $walletService->createUserWallet($user);
@@ -45,7 +47,8 @@ class WalletServiceTest extends DatabaseDependantTestCase
 
     public function testUserCanHaveOnlyOneWallet()
     {
-        $user = $this->userRepository->save($this->userData);
+        $userEntity = $this->createUserEntity();
+        $user = $this->userRepository->save($userEntity);
 
         $walletService = new WalletService($this->walletRepository);
         $wallet = $walletService->createUserWallet($user);
@@ -60,11 +63,25 @@ class WalletServiceTest extends DatabaseDependantTestCase
 
     public function testWalletHasDefaultBalanceOfZero()
     {
-        $user = $this->userRepository->save($this->userData);
+        $userEntity = $this->createUserEntity();
+        $user = $this->userRepository->save($userEntity);
 
         $walletService = new WalletService($this->walletRepository);
         $wallet = $walletService->createUserWallet($user);
 
         $this->assertSame('0.00', $wallet->getBalance());
+    }
+
+    private function createUserEntity(): User
+    {
+        $userEntity = new User();
+        $userEntity->setEmail($this->userData['email']);
+        $userEntity->setPassword($this->userData['password']);
+        $userEntity->setFirstName($this->userData['firstName']);
+        $userEntity->setLastName($this->userData['lastName']);
+        $userEntity->setCreatedAt(new \DateTimeImmutable());
+        $userEntity->setUpdatedAt(new \DateTimeImmutable());
+
+        return $userEntity;
     }
 }

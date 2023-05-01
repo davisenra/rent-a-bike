@@ -6,7 +6,7 @@ namespace App\Tests\Service;
 
 use App\Repository\UserRepository;
 use App\Service\UserService;
-use App\Tests\DatabaseDependantTestCase;
+use App\Tests\Database\DatabaseDependantTestCase;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
