@@ -32,7 +32,7 @@ class Rental
     private ?string $totalPrice = null;
 
     #[ORM\Column(length: 64, nullable: false, enumType: RentalStatus::class)]
-    private ?string $status = null;
+    private RentalStatus $status;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -105,14 +105,14 @@ class Rental
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): RentalStatus
     {
-        return RentalStatus::from($this->status)->value;
+        return $this->status;
     }
 
     public function setStatus(RentalStatus $status): self
     {
-        $this->status = $status->value;
+        $this->status = $status;
 
         return $this;
     }
