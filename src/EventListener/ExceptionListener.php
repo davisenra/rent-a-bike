@@ -12,7 +12,7 @@ class ExceptionListener
     public function __invoke(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-        $isJsonException = get_class($exception) === 'JsonException';
+        $isJsonException = get_class($exception) === 'JsonException' || get_parent_class($exception) === 'JsonException';
 
         if ($isJsonException) {
             $response = new JsonResponse([

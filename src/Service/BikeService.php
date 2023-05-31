@@ -14,6 +14,11 @@ class BikeService
     ) {
     }
 
+    public function getOneById(int $bikeId): ?Bike
+    {
+        return $this->bikeRepository->find($bikeId);
+    }
+
     /**
      * @return array<string, mixed>
      */

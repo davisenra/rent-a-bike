@@ -14,6 +14,16 @@ class BikeRepository
     ) {
     }
 
+    public function find(int $bikeId): ?Bike
+    {
+        return $this->entityManager->find(Bike::class, $bikeId);
+    }
+
+    public function update(Bike $bike): void
+    {
+        $this->entityManager->flush();
+    }
+
     public function save(Bike $bike): Bike
     {
         $this->entityManager->persist($bike);

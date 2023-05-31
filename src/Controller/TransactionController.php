@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\TransactionStatus;
-use App\Enum\TransactionType;
 use App\Request\WalletDepositRequest;
 use App\Service\TransactionService;
 use App\Service\WalletService;

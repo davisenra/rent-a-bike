@@ -22,7 +22,7 @@ class Rental
     #[ORM\JoinColumn(nullable: false)]
     private ?Bike $bike = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $startTime = null;
 
     #[ORM\Column(nullable: true)]
